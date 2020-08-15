@@ -1,0 +1,13 @@
+{
+  "name": "PlayGround",
+  "displayName": "PlayGround",
+  "expo": {
+    "name": "PlayGround",
+    "slug": "PlayGround",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "description": ""
+  }
+}
