@@ -1,20 +1,72 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { Ionicons, FontAwesome, Entypo, MaterialIcons } from '@expo/vector-icons';
 
-function TempScreen(props: { color: string; title: string }) {
+import {
+  Ionicons,
+  FontAwesome,
+  FontAwesome5,
+  Feather,
+  Entypo,
+  EvilIcons,
+  MaterialIcons,
+} from '@expo/vector-icons';
+import LocalNews from './news-module/local-news';
+import NationalNews from './news-module/national-news';
+
+const Tab = createBottomTabNavigator();
+const TopTab = createMaterialTopTabNavigator();
+const Stack = createStackNavigator();
+const INITIAL_ROUTE_NAME = 'News';
+
+function TempScreen(props: { color: string, title: string }) {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', backgroundColor: props.color, alignItems: 'center' }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: props.color,
+        alignItems: 'center',
+      }}>
       <Text style={{ color: '#F0F8FF' }}>{props.title}</Text>
     </View>
   );
 }
 
-const Tab = createBottomTabNavigator();
-const INITIAL_ROUTE_NAME = 'HOME';
+
+
+function NewsHomeScreen({ navigation }: any) {
+  return (
+    <TopTab.Navigator >
+      <TopTab.Screen name="Local" component={LocalNews} />
+      <TopTab.Screen name="National" component={NationalNews} />
+    </TopTab.Navigator>
+  );
+}
+
+function NewsStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="News"
+        component={NewsHomeScreen} 
+        options={{
+          headerLeftContainerStyle: {marginLeft: 10},
+          headerRightContainerStyle: {marginRight: 10},
+          headerLeft: (props) => (
+            <Ionicons name="ios-options" size={24} color="black" />
+          ),
+          headerRight: (props) => (
+            <EvilIcons name="user" size={24} color="black" />
+          ),
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
 
 export default function App() {
   return (
@@ -25,52 +77,57 @@ export default function App() {
           activeTintColor: '#1E90FF',
         }}>
         <Tab.Screen
-          name="HOME"
+          name="Complaints"
           component={() => <TempScreen color="#C0C0C0" title="Screen 1" />}
           options={{
-            title: 'Home',
+            title: 'Complaints',
+            tabBarBadge: '2',
             tabBarIcon: ({ color, size }) => (
-              <Entypo name="home" color={color} size={size} />
+              <FontAwesome5
+                name="envelope-open-text"
+                color={color}
+                size={size}
+              />
             ),
           }}
         />
         <Tab.Screen
-          name="CURRENT"
+          name="Hierarchy"
           component={() => <TempScreen color="#87CEFA" title="Screen 2" />}
           options={{
-            title: 'Current',
+            title: 'Hierarchy',
+            tabBarIcon: ({ color, size }) => (
+              <Entypo name="flow-tree" color={color} size={size} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="News"
+          component={NewsStack}
+          options={{
+            title: 'News',
             tabBarIcon: ({ color, size }) => (
               <FontAwesome name="newspaper-o" color={color} size={size} />
             ),
           }}
         />
         <Tab.Screen
-          name="PERSONAL"
-          component={() => <TempScreen color="#D8BFD8" title="Screen 3" />}
-          options={{
-            title: 'Personal',
-            tabBarIcon: ({ color, size }) => (
-              <MaterialIcons name="business-center" color={color} size={size} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="GALLERY"
+          name="MoneyMgmt"
           component={() => <TempScreen color="#66CDAA" title="Screen 4" />}
           options={{
-            title: 'Gallery',
+            title: 'Money Mgmt',
             tabBarIcon: ({ color, size }) => (
-              <MaterialIcons name="collections" color={color} size={size} />
+              <FontAwesome5 name="coins" color={color} size={size} />
             ),
           }}
         />
         <Tab.Screen
-          name="DOWNLOADS"
+          name="Settings"
           component={() => <TempScreen color="#D2B48C" title="Screen 5" />}
           options={{
-            title: 'Downloads',
+            title: 'Settings',
             tabBarIcon: ({ color, size }) => (
-              <MaterialIcons name="file-download" color={color} size={size} />
+              <Feather name="settings" color={color} size={size} />
             ),
           }}
         />
@@ -78,12 +135,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
