@@ -8,14 +8,14 @@ interface MainState {
     isLoading?: Boolean;
 }
 
-export default class LocalNews extends Component<{}, Partial<MainState>> {
+export default class InternationalNews extends Component<{}, Partial<MainState>> {
     constructor(props: any) {
         super(props);
         this.state = { isLoading: true, data: [] }
 
     }
     componentDidMount() {
-        getArticles('in').then(data => {
+        getArticles().then(data => {
             this.setState({ isLoading: false, data: data });
         }, error => {
             Alert.alert('Error', 'Something went wrong');
@@ -43,24 +43,4 @@ export default class LocalNews extends Component<{}, Partial<MainState>> {
         )
     }
 
-
-
-
-    // render() {
-    //     return (
-    //         <View>
-    //         {
-    //           this.state.data?.map((item, i) => (
-    //             <ListItem
-    //               key={i}
-    //               leftAvatar={{ source: { uri: item.urlToImage } }}
-    //               title={item.title}
-    //               subtitle={item.author}
-    //               bottomDivider
-    //             />
-    //           ))
-    //         }
-    //       </View>
-    //     );
-    // }
 }
