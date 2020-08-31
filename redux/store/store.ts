@@ -8,7 +8,7 @@ import rootReducer from '../reducer/index';
 const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
-    whitelist: ["newsSettingsReducer"],
+    whitelist: ["newsSettingsReducer","locationReducer"],
     blacklist: [],
 };
 

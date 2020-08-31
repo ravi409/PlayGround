@@ -1,11 +1,19 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, View, Alert, Linking, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Button, Input } from 'react-native-elements';
+import { Button, Input, Card } from 'react-native-elements';
 import { EvilIcons } from '@expo/vector-icons';
+import { connect } from 'react-redux';
+
+const mapStateToProps = (state: any) => {
+    console.log(state);
+    return {
+        locationData: state.locationReducer.locationData
+    }
+}
 
 
-export default function HierarchyHome() {
+export function HierarchySettings({ navigation, locationData }: any) {
     // const [pinCode, onChangePinCode] = React.useState('');
     // const [pinCodeError, updatePinCodeError] = React.useState('');
 
@@ -19,12 +27,30 @@ export default function HierarchyHome() {
     //         updatePinCodeError('');
     //     }
     // }
+    const LocationCard = () => {
+        return (<Card>
+            <Text>{locationData.city}, {locationData.subdistrict} (Sub-District)</Text>
+            <Text>{locationData.district} (District), {locationData.state}</Text>
+            <Button
+                title="Change"
+                type='clear'
+                onPress={() => navigation.navigate('StateList')}
+            />
+        </Card>);
+    }
 
     return (
         <View style={styles.container}>
             <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
                 <View style={[styles.bodyContainer]}>
-                    <Text>Click on Page Settings</Text>
+                    {
+                        locationData.city !== undefined ? <LocationCard /> :
+                            <Button
+                                title="Choose your location"
+                                type='outline'
+                                onPress={() => navigation.navigate('StateList')}
+                            />
+                    }
 
                     {/* <Input keyboardType='numeric' maxLength={6}
                         placeholder="Enter pincode"
@@ -42,12 +68,8 @@ export default function HierarchyHome() {
 
                     <View style={{ alignItems: 'center', padding: 15 }}>
                         <Text>Or</Text>
-                    </View>
-                    <Button
-                        title="Choose your location"
-                        type='outline'
-                        onPress={() => Alert.alert('Select Location')}
-                    /> */}
+                    </View> */}
+
                 </View>
             </ScrollView>
         </View>
@@ -105,3 +127,5 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
     },
 });
+
+export default connect(mapStateToProps, null)(HierarchySettings);
