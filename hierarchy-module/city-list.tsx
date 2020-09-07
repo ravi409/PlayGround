@@ -34,7 +34,8 @@ export  class CityList extends Component<{navigation:{navigate:any},locationData
         this.props.locationData[fieldName] = value;
         this.props.reduxUpdateLocation(this.props.locationData);
         console.log(this.props.locationData);
-        this.props.navigation.navigate('HierarchySettings',{value:1});
+        // this.props.navigation.navigate('HierarchySettings',{value:1});
+        this.props.navigation.navigate('PoliticalHierarchy',{value:1});
     }
     
     componentDidMount() {

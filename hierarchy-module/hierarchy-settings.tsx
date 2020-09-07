@@ -4,6 +4,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Button, Input, Card } from 'react-native-elements';
 import { EvilIcons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
+import { updateLocation } from '../redux/actions/update-location-action';
 
 const mapStateToProps = (state: any) => {
     console.log(state);
@@ -11,30 +12,53 @@ const mapStateToProps = (state: any) => {
         locationData: state.locationReducer.locationData
     }
 }
+const mapDispatchToProps = (dispatch: any) => {
+    return {
+        reduxUpdateLocation: (locationData: {}) => dispatch(updateLocation(locationData))
+    }
+}
 
 
-export function HierarchySettings({ navigation, locationData }: any) {
-    // const [pinCode, onChangePinCode] = React.useState('');
-    // const [pinCodeError, updatePinCodeError] = React.useState('');
+export function HierarchySettings({ navigation, locationData, reduxUpdateLocation }: any) {
+    const [pinCode, onChangePinCode] = React.useState(locationData['pinCode']);
+    const [pinCodeError, updatePinCodeError] = React.useState('');
 
-    // const validatePinCode = () => {
-    //     var reg = new RegExp('^[0-9]+$');
-    //     if (pinCode == null || pinCode == undefined || pinCode.length == 0) {
-    //         updatePinCodeError('');
-    //     } else if (!reg.test(pinCode) || pinCode.length != 6) {
-    //         updatePinCodeError('Please enter a valid pincode');
-    //     } else {
-    //         updatePinCodeError('');
-    //     }
-    // }
+    const changePinValue = (pin:any) => {
+        onChangePinCode(pin);
+        var reg = new RegExp('^[0-9]+$');
+        if(pin != null && pin  != undefined && pin.length == 6 && reg.test(pin)){
+            updatePinCodeError('');
+            locationData['pinCode'] = pin;
+            reduxUpdateLocation(locationData);
+            navigation.navigate('PoliticalHierarchy',{value:1});
+        }
+    }
+
+    const validatePinCode = () => {
+        var reg = new RegExp('^[0-9]+$');
+        if (pinCode == null || pinCode == undefined || pinCode.length == 0) {
+            updatePinCodeError('');
+        } else if (!reg.test(pinCode) || pinCode.length != 6) {
+            updatePinCodeError('Please enter a valid pincode');
+        } else {
+            updatePinCodeError('');
+        }
+    }
+   
     const LocationCard = () => {
         return (<Card>
-            <Text>{locationData.city}, {locationData.subdistrict} (Sub-District)</Text>
-            <Text>{locationData.district} (District), {locationData.state}</Text>
+            {locationData.pinCode != undefined ?
+                <Text>{locationData.pinCode}</Text> :
+                <View>
+                    <Text>{locationData.city}, {locationData.subdistrict} (Sub-District)</Text>
+                    <Text>{locationData.district} (District), {locationData.state}</Text>
+                </View>
+            }
+
             <Button
                 title="Change"
                 type='clear'
-                onPress={() => navigation.navigate('StateList')}
+                onPress={() => reduxUpdateLocation({})}
             />
         </Card>);
     }
@@ -44,12 +68,33 @@ export function HierarchySettings({ navigation, locationData }: any) {
             <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
                 <View style={[styles.bodyContainer]}>
                     {
-                        locationData.city !== undefined ? <LocationCard /> :
-                            <Button
-                                title="Choose your location"
-                                type='outline'
-                                onPress={() => navigation.navigate('StateList')}
-                            />
+                        (locationData.city !== undefined || locationData.pinCode !== undefined) ?
+                            <LocationCard /> :
+                            <View>
+
+                                <Input keyboardType='numeric' maxLength={6}
+                                    placeholder="Enter pincode"
+                                    clearButtonMode='while-editing'
+                                    onChangeText={text => changePinValue(text)}
+                                    onBlur={e => validatePinCode()}
+                                    value={pinCode}
+                                    label="Pincode"
+                                    errorMessage={pinCodeError}
+                                    errorStyle={{ color: 'red' }}
+                                    leftIcon={<EvilIcons name="location" size={24} color='grey' />}
+
+                                />
+
+                                <View style={{ alignItems: 'center', padding: 15 }}>
+                                    <Text>Or</Text>
+                                </View>
+
+                                <Button
+                                    title="Choose your location"
+                                    type='outline'
+                                    onPress={() => navigation.navigate('StateList')}
+                                />
+                            </View>
                     }
 
                     {/* <Input keyboardType='numeric' maxLength={6}
@@ -128,4 +173,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default connect(mapStateToProps, null)(HierarchySettings);
+export default connect(mapStateToProps, mapDispatchToProps)(HierarchySettings);

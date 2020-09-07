@@ -11,33 +11,14 @@ import CityList from './city-list';
 
 const Stack = createStackNavigator();
 
-function HierarchyScreen() {
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        padding: 15
-      }}>
-      <TextInput inlineImageLeft='search_icon'
-        keyboardType='number-pad' maxLength={6}
-        placeholder='Enter Pin Code'
-        autoCompleteType='postal-code'
-        clearButtonMode='while-editing'
-        style={{ flex: 1, flexDirection: "column"}}
-      />
-    </View>
-  );
-}
-
 export default function HierarchyStackNavigator({navigation}:any) {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Political Hierarchy"
+        name="PoliticalHierarchy"
         component={HierarchyHome}
         options={{
+          title: "Political Hierarchy",
           headerLeftContainerStyle: { marginLeft: 10 },
           headerRightContainerStyle: { marginRight: 10 },
           headerLeft: (props) => (
